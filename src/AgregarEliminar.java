@@ -1,5 +1,6 @@
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -148,10 +149,14 @@ public class AgregarEliminar extends javax.swing.JFrame {
         String nombreCurso = textoParaBuscarCurso.getText().trim();
 
         if (!nombreCurso.isEmpty()) {
-            if (agregarCurso(nombreCurso)) {
-                JOptionPane.showMessageDialog(this, "Curso agregado con éxito", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                JOptionPane.showMessageDialog(this, "No se pudo agregar el curso", "Error", JOptionPane.ERROR_MESSAGE);
+            try {
+                if (agregarCurso(nombreCurso)) {
+                    JOptionPane.showMessageDialog(this, "Curso agregado con éxito", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(this, "No se pudo agregar el curso", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (CursoYaExisteException e) {
+                JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         } else {
             JOptionPane.showMessageDialog(this, "Por favor, ingrese un nombre de curso válido", "Error", JOptionPane.ERROR_MESSAGE);
@@ -162,10 +167,14 @@ public class AgregarEliminar extends javax.swing.JFrame {
         String nombreCurso = textoParaBuscarCurso.getText().trim();
 
         if (!nombreCurso.isEmpty()) {
-            if (eliminarCurso(nombreCurso)) {
-                JOptionPane.showMessageDialog(this, "Curso eliminado con éxito", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                JOptionPane.showMessageDialog(this, "No se pudo eliminar el curso", "Error", JOptionPane.ERROR_MESSAGE);
+            try {
+                if (eliminarCurso(nombreCurso)) {
+                    JOptionPane.showMessageDialog(this, "Curso eliminado con éxito", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(this, "No se pudo eliminar el curso", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (CursoNoEncontradoException e) {
+                JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         } else {
             JOptionPane.showMessageDialog(this, "Por favor, ingrese un nombre de curso válido", "Error", JOptionPane.ERROR_MESSAGE);
@@ -180,37 +189,54 @@ public class AgregarEliminar extends javax.swing.JFrame {
         String nombreCurso = textoParaBuscarCurso.getText().trim();
 
         if (!nombreCurso.isEmpty()) {
-            if (agregarCurso(nombreCurso)) {
-                JOptionPane.showMessageDialog(this, "Curso agregado con éxito", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                JOptionPane.showMessageDialog(this, "No se pudo agregar el curso", "Error", JOptionPane.ERROR_MESSAGE);
+            try {
+                if (agregarCurso(nombreCurso)) {
+                    JOptionPane.showMessageDialog(this, "Curso agregado con éxito", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(this, "No se pudo agregar el curso", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (CursoYaExisteException ex) {
+                Logger.getLogger(AgregarEliminar.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
             JOptionPane.showMessageDialog(this, "Por favor, ingrese un nombre de curso válido", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_textoParaBuscarCursoActionPerformed
-    private boolean agregarCurso(String nombreCurso) {
+    private boolean agregarCurso(String nombreCurso) throws CursoYaExisteException {
         try {
-            // Lógica para agregar el curso a través de asistenciaColegio
+            // Verificar si el curso ya existe antes de agregarlo
+            if (asistenciaColegioAux.cursoExiste(nombreCurso)) {
+                throw new CursoYaExisteException("El curso ya existe.");
+            }
+
+            // Si el curso no existe, agregarlo
             asistenciaColegioAux.agregarCurso(nombreCurso);
             return true;
-        } catch (Exception e) {
-            // Manejo de excepciones si ocurre algún error al agregar el curso
+        } catch (IOException e) {
             e.printStackTrace();
-            return false;
+            return false; // Puedes cambiar esto según tu lógica de manejo de errores
         }
     }
-    private boolean eliminarCurso(String nombreCurso) {
+
+
+    
+
+    private boolean eliminarCurso(String nombreCurso) throws CursoNoEncontradoException {
         try {
-            // Lógica para eliminar el curso a través de asistenciaColegio
+            // Verificar si el curso existe antes de intentar eliminarlo
+            if (!asistenciaColegioAux.cursoExiste(nombreCurso)) {
+                throw new CursoNoEncontradoException("El curso no existe.");
+            }
+
+            // Si el curso existe, proceder con la eliminación
             asistenciaColegioAux.eliminarCurso(nombreCurso);
             return true;
-        } catch (Exception e) {
-            // Manejo de excepciones si ocurre algún error al eliminar el curso
+        } catch (IOException e) {
             e.printStackTrace();
-            return false;
+            return false; // Puedes cambiar esto según tu lógica de manejo de errores
         }
     }
+
     
     private void agregarCursoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_agregarCursoMouseClicked
         // TODO add your handling code here:

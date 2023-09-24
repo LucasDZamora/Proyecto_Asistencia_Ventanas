@@ -222,6 +222,13 @@ public class asistenciaColegio{
         System.out.println("No se encontró el curso: " + nombreCurso);
         return null; // Retorna null si no se encuentra el curso
     }
-    
+    public boolean cursoExiste(String nombreCurso) {
+        for (Cursos curso : arrayCursos) {
+            if (curso.getNombre().equals(nombreCurso)) {
+                return true; // El curso existe
+            }
+        }
+        return false; // El curso no existe
+    }
    
 }

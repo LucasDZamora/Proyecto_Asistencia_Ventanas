@@ -143,20 +143,26 @@ public class PasarAsistencia extends javax.swing.JFrame {
 
     private void pasarAsistenciaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pasarAsistenciaMouseClicked
     // Paso 1: Obtener el nombre del curso y la fecha ingresados por el usuario
-        String nombreCurso = textoNombreCurso.getText();
-        String fecha = textoFecha.getText();
+    String nombreCurso = textoNombreCurso.getText();
+    String fecha = textoFecha.getText();
 
-        // Paso 2: Buscar el curso correspondiente
-        Cursos curso = null;
-        for (Cursos c : asistenciaColegioAux.obtenerCopiaCursos()) {
-            if (c.getNombre().equalsIgnoreCase(nombreCurso)) {
-                curso = c;
-                break;
-            }
+    // Paso 2: Buscar el curso correspondiente
+    Cursos curso = null;
+    for (Cursos c : asistenciaColegioAux.obtenerCopiaCursos()) {
+        if (c.getNombre().equalsIgnoreCase(nombreCurso)) {
+            curso = c;
+            break;
         }
+    }
 
-        if (curso != null) {
-            // Paso 3: Mostrar ventana emergente para cada alumno
+    if (curso != null) {
+            // Paso 3: Verificar si el curso tiene alumnos
+            if (curso.obtenerCopiaAlumnos().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "El curso no tiene alumnos registrados.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // Paso 4: Mostrar ventana emergente para cada alumno
             HashMap<String, Alumnos> alumnos = curso.obtenerCopiaAlumnos();
             for (Alumnos alumno : alumnos.values()) {
                 String[] opciones = { "Presente", "Ausente", "Justificado" };
@@ -164,7 +170,7 @@ public class PasarAsistencia extends javax.swing.JFrame {
                         "¿Asistencia para " + alumno.getNombre() + " " + alumno.getApellido() + "?", "Pasar Asistencia",
                         JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, opciones, opciones[0]);
 
-                // Paso 4: Registrar la asistencia
+                // Paso 5: Registrar la asistencia
                 Asistencia asistencia = new Asistencia(fecha);
                 switch (seleccion) {
                     case 0: // Presente
@@ -183,7 +189,7 @@ public class PasarAsistencia extends javax.swing.JFrame {
                 alumno.agregarAsistencia(asistencia);
             }
 
-            // Paso 5: Mostrar ventana emergente de éxito
+            // Paso 6: Mostrar ventana emergente de éxito
             JOptionPane.showMessageDialog(this, "Asistencia registrada correctamente", "Éxito",
                     JOptionPane.INFORMATION_MESSAGE);
         } else {
