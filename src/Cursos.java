@@ -100,6 +100,10 @@ public void mostrarInfoCurso() {
             return;
         }
         alumnos.put(rut, nuevoAlumno);
+
+        // Incrementar la cantidad de alumnos
+        cantidadAlumnos++;
+
         System.out.println("Alumno agregado al curso: " + this.nombre);
     }
     public void asistenciaCurso(String dia) {
@@ -158,10 +162,15 @@ public void mostrarInfoCurso() {
     public void eliminarAlumno(String rutAlumno) {
         if (alumnos.containsKey(rutAlumno)) {
             alumnos.remove(rutAlumno);
+
+            // Decrementar la cantidad de alumnos
+            cantidadAlumnos--;
+
             System.out.println("Alumno con Rut " + rutAlumno + " eliminado del curso " + nombre);
         } else {
             System.out.println("No se encontró al alumno con Rut " + rutAlumno + " en el curso " + nombre);
         }
     }
+    
 
 }

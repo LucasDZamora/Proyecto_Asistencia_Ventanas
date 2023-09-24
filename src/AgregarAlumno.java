@@ -154,7 +154,7 @@ public class AgregarAlumno extends javax.swing.JFrame {
                 ModificarActionPerformed(evt);
             }
         });
-        background.add(Modificar, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 330, 80, -1));
+        background.add(Modificar, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 330, 90, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -197,14 +197,8 @@ public class AgregarAlumno extends javax.swing.JFrame {
         String rutAlumno = textoRut1.getText().trim();
 
         if (!nombreCurso.isEmpty() && !rutAlumno.isEmpty()) {
-            // Buscar el curso por nombre
-            Cursos cursoEncontrado = null;
-            for (Cursos curso : asistenciaColegioAux.obtenerCopiaCursos()) {
-                if (curso.getNombre().equals(nombreCurso)) {
-                    cursoEncontrado = curso;
-                    break;
-                }
-            }
+            // Buscar el curso por nombre utilizando buscarCursoNombre
+            Cursos cursoEncontrado = asistenciaColegioAux.buscarCursoNombre(nombreCurso);
 
             if (cursoEncontrado != null) {
                 // Preguntar al usuario si está seguro de eliminar al alumno
@@ -223,16 +217,11 @@ public class AgregarAlumno extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_eliminarMouseClicked
     private boolean agregarAlumno(String nombreCurso, String nombreAlumno, String apellidoAlumno, String rutAlumno) {
-        // Busca el curso por nombre
-        Cursos cursoEncontrado = null;
-        for (Cursos curso : asistenciaColegioAux.obtenerCopiaCursos()) {
-            if (curso.getNombre().equals(nombreCurso)) {
-                cursoEncontrado = curso;
-                break;
-            }
-        }
+        // Buscar el curso por nombre utilizando buscarCursoNombre
+        Cursos cursoEncontrado = asistenciaColegioAux.buscarCursoNombre(nombreCurso);
+
         if (cursoEncontrado != null) {
-            // Verifica si el alumno ya existe en el curso
+            // Verificar si el alumno ya existe en el curso
             if (cursoEncontrado.obtenerCopiaAlumnos().containsKey(rutAlumno)) {
                 return false;
             }
@@ -241,10 +230,11 @@ public class AgregarAlumno extends javax.swing.JFrame {
             cursoEncontrado.agregarAlumno(rutAlumno, nombreAlumno, apellidoAlumno);
             return true;
         } else {
-            //no se encontro
+            // No se encontró el curso
             return false;
         }
     }
+    
     private void textoCursoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textoCursoActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_textoCursoActionPerformed

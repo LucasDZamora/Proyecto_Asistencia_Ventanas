@@ -27,7 +27,8 @@ public class asistenciaColegio{
 
     public static void inicializarDatos() throws FileNotFoundException {
         // Ruta al archivo CSV
-        String rutaCSV = "C:\\Users\\lzamo\\OneDrive\\Documentos\\NetBeansProjects\\asistenciaColegio\\src\\datos.csv";
+        String userDir = System.getProperty("user.dir");
+        String rutaCSV = userDir + "/src/datos.csv";
 
         // Crear una instancia de la clase CSV
         CSV csv = new CSV(rutaCSV);
@@ -79,6 +80,36 @@ public class asistenciaColegio{
             }
         }
     }
+    
+    public static void guardarAlSalir() throws IOException {
+            // Ruta relativa al archivo CSV (desde el directorio de trabajo)
+            String userDir = System.getProperty("user.dir");
+            String rutaCSV = userDir + "/src/datos.csv";
+
+            // Crear un nuevo archivo temporal para escribir los datos actualizados
+            String rutaCSVTmp = userDir + "/src/datos_temp.csv";
+            File archivoCSV = new File(rutaCSV);
+            File archivoCSVTmp = new File(rutaCSVTmp);
+
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(archivoCSVTmp))) {
+                // Escribir la primera línea de encabezados en el archivo temporal
+                writer.write("Nombre del Curso,Cantidad de Alumnos,Rut,Nombre Alumno,Apellido Alumno");
+                writer.newLine();
+
+                // Iterar sobre los cursos y sus alumnos para escribir los datos en el archivo temporal
+                for (Cursos curso : arrayCursos) {
+                    for (Alumnos alumno : curso.obtenerCopiaAlumnos().values()) {
+                        writer.write(curso.getNombre() + "," + curso.getCantidadAlumnos() + ","
+                                + alumno.getRut() + "," + alumno.getNombre() + "," + alumno.getApellido());
+                        writer.newLine();
+                    }
+                }
+            }
+
+            // Reemplazar el archivo original con el archivo temporal
+            archivoCSV.delete();
+            archivoCSVTmp.renameTo(archivoCSV);
+        }
     
     public static void eliminarCurso(String nombreCursoEliminar) throws IOException {
         for (int i = 0; i < arrayCursos.size(); i++) {
@@ -150,6 +181,7 @@ public class asistenciaColegio{
         ArrayList<Cursos> copiaCursos = new ArrayList<>(arrayCursos);
         return copiaCursos;
     }
+    
     public static ArrayList<Cursos> buscarCursosPorPorcentaje(String fecha, double cotaInferior, double cotaSuperior) {
         ArrayList<Cursos> cursosEnRango = new ArrayList<>();
 
@@ -163,6 +195,7 @@ public class asistenciaColegio{
 
         return cursosEnRango;
     }
+    
     public static Alumnos obtenerAlumno(String nombreCurso, String rutAlumno) {
         for (Cursos curso : arrayCursos) {
             if (curso.getNombre().equals(nombreCurso)) {
@@ -179,4 +212,16 @@ public class asistenciaColegio{
         System.out.println("No se encontró el curso: " + nombreCurso);
         return null; // No se encontró el curso
     }
+    
+    public static Cursos buscarCursoNombre(String nombreCurso) {
+        for (Cursos curso : arrayCursos) {
+            if (curso.getNombre().equals(nombreCurso)) {
+                return curso; // Devuelve el curso si lo encuentra
+            }
+        }
+        System.out.println("No se encontró el curso: " + nombreCurso);
+        return null; // Retorna null si no se encuentra el curso
+    }
+    
+   
 }

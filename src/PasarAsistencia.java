@@ -134,7 +134,7 @@ public class PasarAsistencia extends javax.swing.JFrame {
             Logger.getLogger(MostrarCursos.class.getName()).log(Level.SEVERE, null, ex);
         }
         irMenu.setVisible(true);
-        this.dispose();        // TODO add your handling code here:
+        this.dispose();        
     }//GEN-LAST:event_volverMouseClicked
 
     private void textoFechaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textoFechaActionPerformed

@@ -143,12 +143,14 @@ public class MostrarCursos extends javax.swing.JFrame {
     
     private void mostrarNombresDeCursosEnComboBox() {
         mostrarNombresCursos.removeAllItems();
-        ArrayList<Cursos> cursos = asistenciaColegio.obtenerCopiaCursos();
+        //obtenerCopiaCursos se usa en este caso solamente para mostrar, en ningun momento se modifican datos.
+        ArrayList<Cursos> cursos = asistenciaColegioAux.obtenerCopiaCursos();
 
         for (Cursos curso : cursos) {
             mostrarNombresCursos.addItem(curso.getNombre());
         }
     }
+
     private void volverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_volverActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_volverActionPerformed
@@ -168,16 +170,12 @@ public class MostrarCursos extends javax.swing.JFrame {
         // Obtener el nombre del curso seleccionado en el ComboBox
         String nombreCursoSeleccionado = (String) mostrarNombresCursos.getSelectedItem();
 
-        // Buscar el curso correspondiente en la lista de cursos
-        for (Cursos curso : asistenciaColegio.obtenerCopiaCursos()) {
-            if (curso.getNombre().equals(nombreCursoSeleccionado)) {
-                cursoSeleccionado = curso;
-                break;
-            }
-        }
+        // Buscar el curso correspondiente en la lista de cursos utilizando buscarCursoNombre
+        Cursos cursoSeleccionado = asistenciaColegioAux.buscarCursoNombre(nombreCursoSeleccionado);
 
         if (cursoSeleccionado != null) {
             // Obtener la lista de alumnos del curso seleccionado
+            // En este caso tambien obtenerCopiaAlumnos se utiliza solo para mostrar.
             HashMap<String, Alumnos> alumnos = cursoSeleccionado.obtenerCopiaAlumnos();
 
             // Llenar la tabla con los datos de los alumnos
