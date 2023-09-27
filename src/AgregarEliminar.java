@@ -155,8 +155,8 @@ public class AgregarEliminar extends javax.swing.JFrame {
                 } else {
                     JOptionPane.showMessageDialog(this, "No se pudo agregar el curso", "Error", JOptionPane.ERROR_MESSAGE);
                 }
-            } catch (CursoYaExisteException e) {
-                JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (CursoYaExisteException ex) {
+                Logger.getLogger(AgregarEliminar.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
             JOptionPane.showMessageDialog(this, "Por favor, ingrese un nombre de curso válido", "Error", JOptionPane.ERROR_MESSAGE);
@@ -203,38 +203,26 @@ public class AgregarEliminar extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_textoParaBuscarCursoActionPerformed
     private boolean agregarCurso(String nombreCurso) throws CursoYaExisteException {
-        try {
-            // Verificar si el curso ya existe antes de agregarlo
-            if (asistenciaColegioAux.cursoExiste(nombreCurso)) {
-                throw new CursoYaExisteException("El curso ya existe.");
-            }
-
-            // Si el curso no existe, agregarlo
-            asistenciaColegioAux.agregarCurso(nombreCurso);
-            return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false; // Puedes cambiar esto según tu lógica de manejo de errores
+        // Verificar si el curso ya existe antes de agregarlo
+        if (asistenciaColegioAux.cursoExiste(nombreCurso)) {
+            throw new CursoYaExisteException("El curso ya existe.");
         }
+        // Si el curso no existe, agregarlo
+        asistenciaColegioAux.agregarCurso(nombreCurso);
+        return true;
     }
 
 
     
 
     private boolean eliminarCurso(String nombreCurso) throws CursoNoEncontradoException {
-        try {
-            // Verificar si el curso existe antes de intentar eliminarlo
-            if (!asistenciaColegioAux.cursoExiste(nombreCurso)) {
-                throw new CursoNoEncontradoException("El curso no existe.");
-            }
-
-            // Si el curso existe, proceder con la eliminación
-            asistenciaColegioAux.eliminarCurso(nombreCurso);
-            return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false; // Puedes cambiar esto según tu lógica de manejo de errores
+        // Verificar si el curso existe antes de intentar eliminarlo
+        if (!asistenciaColegioAux.cursoExiste(nombreCurso)) {
+            throw new CursoNoEncontradoException("El curso no existe.");
         }
+        // Si el curso existe, proceder con la eliminación
+        asistenciaColegioAux.eliminarCurso(nombreCurso);
+        return true;
     }
 
     

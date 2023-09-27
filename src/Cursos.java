@@ -134,11 +134,13 @@ public void mostrarInfoCurso() {
         System.out.println("Ausentes: " + ausentes + " (" + df.format(porcentajeAusentes) + "%)");
     }
     
+    //Metodo utizado solamente para MOSTRAR datos, nunca se modifican.
     public HashMap<String, Alumnos> obtenerCopiaAlumnos() {
         // Crea una nueva copia del HashMap de alumnos
         HashMap<String, Alumnos> copiaAlumnos = new HashMap<>(alumnos);
         return copiaAlumnos;
     }
+    
     public double calcularPorcentajeAsistencia(String fecha) {
         int totalAlumnos = alumnos.size();
         int asistentes = 0;
@@ -159,6 +161,7 @@ public void mostrarInfoCurso() {
     public Alumnos obtenerAlumnoPorRut(String rutAlumno) {
         return alumnos.get(rutAlumno);
     }
+    
     public void eliminarAlumno(String rutAlumno) {
         if (alumnos.containsKey(rutAlumno)) {
             alumnos.remove(rutAlumno);

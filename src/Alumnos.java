@@ -14,10 +14,9 @@ public class Alumnos {
       this.rut = rut;
       this.asistencia = new ArrayList<>();
     }
-    public Alumnos(String nombre, String apellido) {
+    public Alumnos(String rut, String nombre) {
+      this.rut = rut;
       this.nombre = nombre;
-      this.apellido = apellido;
-      this.rut = "";
       this.asistencia = new ArrayList<>();
     }
 

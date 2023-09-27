@@ -4,7 +4,7 @@ import java.util.*;
 public class asistenciaColegio{
     
     private static asistenciaColegio instance;
-    private static ArrayList<Cursos> arrayCursos; // Supongo que tienes una clase Cursos para representar los cursos
+    private static ArrayList<Cursos> arrayCursos; 
 
     // Constructor privado para evitar la creación de instancias desde fuera de la clase.
     private asistenciaColegio() {
@@ -19,10 +19,19 @@ public class asistenciaColegio{
         return instance;
     }
 
-    
-    public static void agregarCurso(String nombre) throws IOException {
-        Cursos cursoaux = new Cursos(nombre,0);
-        arrayCursos.add(cursoaux);
+    //Metodo para agregar curso
+    public static void agregarCurso(String nombre) {
+        try {
+            for (Cursos curso : arrayCursos) {
+                if (curso.getNombre().equals(nombre)) {
+                    throw new CursoYaExisteException("El curso " + nombre + " ya existe.");
+                }
+            }
+            Cursos cursoaux = new Cursos(nombre, 0);
+            arrayCursos.add(cursoaux);
+        } catch (CursoYaExisteException e) {
+            System.err.println("Error: " + e.getMessage());
+        }
     }
 
     public static void inicializarDatos() throws FileNotFoundException {
@@ -42,7 +51,6 @@ public class asistenciaColegio{
 
             while ((line = csv.nextLine()) != null) {
                 // Procesar cada línea del archivo CSV aquí
-                // Puedes obtener datos utilizando csv.get_csvField(field, line)
 
                 // Ejemplo: Obtener nombre del curso y cantidad de alumnos
                 String nombreCurso = csv.get_csvField(0, line);
@@ -71,12 +79,10 @@ public class asistenciaColegio{
                 arrayCursos.add(curso);
             }
         } catch (IOException e) {
-            e.printStackTrace();
         } finally {
             try {
                 csv.close();
             } catch (IOException e) {
-                e.printStackTrace();
             }
         }
     }
@@ -111,16 +117,20 @@ public class asistenciaColegio{
             archivoCSVTmp.renameTo(archivoCSV);
         }
     
-    public static void eliminarCurso(String nombreCursoEliminar) throws IOException {
-        for (int i = 0; i < arrayCursos.size(); i++) {
-            Cursos cursoaux = arrayCursos.get(i);
-            if (cursoaux.getNombre().equals(nombreCursoEliminar)) {
-                arrayCursos.remove(i);
-                System.out.println("Curso eliminado: " + nombreCursoEliminar);
-                return;
-            } else {
-                System.out.println("No se encontró el curso: " + nombreCursoEliminar);
+    public static void eliminarCurso(String nombreCursoEliminar) {
+        try {
+            Iterator<Cursos> iterator = arrayCursos.iterator();
+            while (iterator.hasNext()) {
+                Cursos cursoaux = iterator.next();
+                if (cursoaux.getNombre().equals(nombreCursoEliminar)) {
+                    iterator.remove();
+                    System.out.println("Curso eliminado: " + nombreCursoEliminar);
+                    return;
+                }
             }
+            throw new CursoNoEncontradoException("No se encontró el curso: " + nombreCursoEliminar);
+        } catch (CursoNoEncontradoException e) {
+            System.err.println("Error: " + e.getMessage());
         }
     }
 
@@ -176,6 +186,7 @@ public class asistenciaColegio{
         }
     }
     
+    //Metodo utizado solamente para MOSTRAR datos, nunca se modifican.
     public static ArrayList<Cursos> obtenerCopiaCursos() {
         // Crear una copia del ArrayList de cursos
         ArrayList<Cursos> copiaCursos = new ArrayList<>(arrayCursos);

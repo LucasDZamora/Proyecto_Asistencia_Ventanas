@@ -18,7 +18,6 @@ public class AgregarAlumno extends javax.swing.JFrame {
     
     
     private static asistenciaColegio asistenciaColegioAux;
-    private Alumnos alumnoAModificar;
     /**
      * Creates new form AgregarAlumno
      */
@@ -234,23 +233,53 @@ public class AgregarAlumno extends javax.swing.JFrame {
             return false;
         }
     }
+    // Sobrecarga del método agregarAlumno para no incluir el apellido
+    private boolean agregarAlumno(String nombreCurso, String nombreAlumno, String rutAlumno) {
+        // Buscar el curso por nombre utilizando buscarCursoNombre
+        Cursos cursoEncontrado = asistenciaColegioAux.buscarCursoNombre(nombreCurso);
+
+        if (cursoEncontrado != null) {
+            // Verificar si el alumno ya existe en el curso
+            if (cursoEncontrado.obtenerCopiaAlumnos().containsKey(rutAlumno)) {
+                return false;
+            }
+
+            // Si el alumno no existe, agrégalo
+            cursoEncontrado.agregarAlumno(rutAlumno, nombreAlumno);
+            return true;
+        } else {
+            // No se encontró el curso
+            return false;
+        }
+    }
+    
     
     private void textoCursoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textoCursoActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_textoCursoActionPerformed
 
     private void AgregarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_AgregarMouseClicked
-            // Obtener los valores ingresados en los campos de texto
+        // Obtener los valores ingresados en los campos de texto
         String nombreCurso = textoCurso.getText().trim();
         String nombreAlumno = textoNombre.getText().trim();
         String apellidoAlumno = textoApellido.getText().trim();
         String rutAlumno = textoRut1.getText().trim();
 
-        if (!nombreCurso.isEmpty() && !nombreAlumno.isEmpty() && !apellidoAlumno.isEmpty()) {
-            if (agregarAlumno(nombreCurso, nombreAlumno, apellidoAlumno, rutAlumno)) {
-                JOptionPane.showMessageDialog(this, "Alumno agregado con éxito", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+        if (!nombreCurso.isEmpty() && !nombreAlumno.isEmpty() && !rutAlumno.isEmpty()) {
+            if (apellidoAlumno.isEmpty()) {
+                // Llamar al método sobrecargado sin apellido
+                if (agregarAlumno(nombreCurso, nombreAlumno, rutAlumno)) {
+                    JOptionPane.showMessageDialog(this, "Alumno agregado con éxito", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(this, "No se pudo agregar el alumno.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
             } else {
-                JOptionPane.showMessageDialog(this, "No se pudo agregar el alumno.", "Error", JOptionPane.ERROR_MESSAGE);
+                // Llamar al método sobrecargado con apellido
+                if (agregarAlumno(nombreCurso, nombreAlumno, apellidoAlumno, rutAlumno)) {
+                    JOptionPane.showMessageDialog(this, "Alumno agregado con éxito", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(this, "No se pudo agregar el alumno.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
             }
         } else {
             JOptionPane.showMessageDialog(this, "Por favor, complete todos los campos obligatorios", "Error", JOptionPane.ERROR_MESSAGE);
